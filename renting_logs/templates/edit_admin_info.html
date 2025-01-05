@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>修改个人信息</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif; /* 更现代的字体 */
+            background-color: #f4f4f9; /* 更柔和的背景色 */
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24px; /* 设置标题字体大小 */
+            margin-top: 20px; /* 添加标题上方的外边距 */
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 增加阴影效果 */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px; /* 更圆润的边框 */
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* 输入框内部阴影 */
+            font-size: 16px; /* 设置输入框字体大小 */
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s; /* 平滑颜色过渡效果 */
+            flex: 1; /* 使用Flex布局，使按钮并排且宽度相等 */
+            font-size: 16px; /* 设置字体大小 */
+            line-height: normal; /* 修复文字垂直对齐问题 */
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: #ff0000;
+            margin-top: 10px;
+        }
+
+        /* 返回主页按钮样式 */
+        .home-button {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .home-button a {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 25px; /* 调整按钮内边距，使大小一致 */
+            text-decoration: none;
+            border-radius: 5px;
+            flex: 1; /* 使用Flex布局，使按钮并排且宽度相等 */
+            font-size: 16px; /* 设置字体大小 */
+        }
+
+        .home-button a:hover {
+            background-color: #0056b3;
+        }
+
+        /* 分隔按钮的外边距 */
+        .button-separator {
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>修改用户名密码信息</h1>
+    <form action="http://127.0.0.1:8000/edit_admin_info/" method="post">
+        {% csrf_token %}
+        <label for="new_username">用户名:</label>
+        <input type="text" id="new_username" name="new_username" required value="{{ admin.username }}">
+        <!-- 自动填充当前用户的用户名 -->
+
+        <label for="old_password">原密码:</label>
+        <input type="password" id="old_password" name="old_password" required>
+
+        <label for="new_password">新密码:</label>
+        <input type="password" id="new_password" name="new_password" required>
+
+        <label for="confirm_password">确认新密码:</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+        <div class="home-button">
+            <a href="/admin_home/">返回主页</a>
+            <div class="button-separator"></div> <!-- 分隔按钮的外边距 -->
+            <button type="submit">更新信息</button>
+        </div>
+    </form>
+</body>
+
+</html>

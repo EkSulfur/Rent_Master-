@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>房屋信息管理</title>
+    <script>
+        function selectHouse(houseId) {
+            // 使用AJAX获取指定房屋信息
+            fetch('/api/house/' + houseId)
+                .then(response => response.json())
+                .then(data => {
+                    // 填充房屋信息到表单
+                    document.getElementById('house_id').value = data.id;
+                    document.getElementById('house_number').value = data.house_number;
+                    document.getElementById('area').value = data.area;
+                    document.getElementById('location').value = data.location;
+                    document.getElementById('layout').value = data.layout;
+                    document.getElementById('monthly_rent').value = data.monthly_rent;
+                    document.getElementById('status').value = data.status;
+                });
+        }
+
+        function filterAndSearch() {
+            // 获取搜索和筛选参数
+            var query = document.getElementById('search-query').value;
+            var status = document.getElementById('status-filter').value;
+
+            // 使用AJAX更新房屋列表
+            // 注意：这里的URL和参数需要根据实际后端API进行调整
+            fetch('/api/houses?query=' + query + '&status=' + status)
+                .then(response => response.json())
+                .then(data => {
+    const tableBody = document.getElementById('house-table').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = ''; // 清空当前表格内容
+
+    data.forEach(house => {
+        // 创建新的表格行并填充数据
+        let row = `<tr>
+                       <td>${house.house_number}</td>
+                       <td>${house.area}平方米</td>
+                       <td>${house.location}</td>
+                       <td>${house.layout}</td>
+                       <td>${house.monthly_rent}元</td>
+                       <td>${house.status}</td>
+                       <td><button onclick="selectHouse('${house.id}')">选择</button></td>
+                   </tr>`;
+        tableBody.innerHTML += row; // 将新行添加到表格中
+    });
+})
+
+        }
+    </script>
+</head>
+
+<body>
+    <h1>房屋信息管理</h1>
+     <!-- 搜索和筛选部分 -->
+    <div>
+        <input type="text" id="search-query" placeholder="搜索房屋...">
+        <select id="status-filter">
+            <option value="all">所有</option>
+            <option value="可出租">可出租</option>
+            <option value="不可出租">不可出租</option>
+        </select>
+        <button onclick="filterAndSearch()">查询</button>
+    </div>
+
+    <!-- 房屋信息展示表格 -->
+    <table>
+        <thead>
+            <tr>
+                <th>房号</th>
+                <th>面积</th>
+                <th>位置</th>
+                <th>布局</th>
+                <th>月租</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for house in houses %}
+            <tr>
+                <td>{{ house.house_number }}</td>
+                <td>{{ house.area }}平方米</td>
+                <td>{{ house.location }}</td>
+                <td>{{ house.layout }}</td>
+                <td>{{ house.monthly_rent }}元</td>
+                <td>{{ house.status }}</td>
+                <td>
+                    <button onclick="selectHouse('{{ house.id }}')">选择</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 选中的房屋信息修改区域 -->
+    <form method="post">
+        <input type="hidden" id="house_id" name="house_id">
+        <!-- 其他表单字段，如house_number, area, location等 -->
+        <input type="text" id="house_number" name="house_number">
+        <input type="number" id="area" name="area">
+        <input type="text" id="location" name="location">
+        <input type="text" id="layout" name="layout">
+        <input type="number" id="monthly_rent" name="monthly_rent">
+        <select id="status" name="status">
+            <option value="可出租">可出租</option>
+            <option value="不可出租">不可出租</option>
+        </select>
+        <button type="submit">更新房屋信息</button>
+    </form>
+</body>
+
+</html>

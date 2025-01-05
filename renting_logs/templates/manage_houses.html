@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>查看房屋信息</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        a {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+
+        .filter-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        select {
+            padding: 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>房屋信息</h1>
+
+    <a href="/admin_home/">返回管理员主页</a>
+
+    <!-- 筛选表单 -->
+    <form class="filter-form" method="get">
+        <select name="status">
+            <option value="">所有状态</option>
+            <option value="可出租">可出租</option>
+            <option value="不可出租">不可出租</option>
+            <!-- 其他状态选项 -->
+        </select>
+        <button type="submit">筛选</button>
+    </form>
+
+    <!-- 状态更新表单 -->
+    <form method="post">
+        {% csrf_token %}
+        <select name="status_update">
+            <option value="可出租">设为可出租</option>
+            <option value="不可出租">设为不可出租</option>
+        </select>
+        <button type="submit" name="action" value="update_status">更新状态</button>
+        <!-- 删除房屋表单 -->
+        <button type="submit" name="action" value="delete">删除选中</button>
+
+        <!-- 房屋信息列表 -->
+        <table>
+            <tr>
+                <th>选择</th>
+                <th>房屋编号</th>
+                <th>面积</th>
+                <th>位置</th>
+                <th>布局</th>
+                <th>月租金</th>
+                <th>状态</th>
+            </tr>
+            {% for house in houses %}
+            <tr>
+                <td><input type="checkbox" name="selected_houses" value="{{ house.id }}"></td>
+                <td>{{ house.house_number }}</td>
+                <td>{{ house.area }}</td>
+                <td>{{ house.location }}</td>
+                <td>{{ house.layout }}</td>
+                <td>{{ house.monthly_rent }}</td>
+                <td>{{ house.status }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+</body>
+</html>

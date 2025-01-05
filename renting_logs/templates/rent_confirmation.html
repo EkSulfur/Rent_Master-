@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>租房确认</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('/static/background3.png');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            background-color: #f4f4f8;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #4a4a4a;
+            margin-bottom: 20px;
+        }
+
+        a {
+        display: block; /* 使链接占满整行 */
+        width: max-content; /* 自适应内容宽度 */
+        margin: 20px auto; /* 水平居中并增加上下边距 */
+        background-color: #007bff;
+        color: white;
+        padding: 15px 30px; /* 增加内边距，使按钮更大 */
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 18px; /* 增大字体大小 */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 添加阴影效果 */
+    }
+
+    a:hover {
+        background-color: #0056b3;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* 鼠标悬停时增加阴影效果 */
+    }
+
+        .info {
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .info p {
+            text-align: left;
+            line-height: 1.6;
+            margin-left: 20px;
+        }
+
+
+        button {
+            width: max-content;
+            margin: 20px auto;
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .messages {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px auto;
+            width: max-content;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .messages .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>租房确认</h1>
+
+    {% if selected_house %}
+        <div class="info">
+            <h2>您已成功租下以下房屋</h2>
+            <p>房屋编号：{{ selected_house.house_number }}</p>
+            <p>位置：{{ selected_house.location }}</p>
+            <p>月租金：{{ selected_house.monthly_rent }} 元</p>
+            <p>租金：{{ cost }}</p>
+            <p>手续费：{{ fee }} 元</p>
+            <p>租赁时间：{{ selected_rent_duration }} 个月</p>
+            <p>总费用：{{ total_cost }}</p>
+        </div>
+        <form method="post" action="http://127.0.0.1:8000/rent_confirmation/">
+            {% csrf_token %}
+            <input type="hidden" name="send_email" value="true">
+            <button type="submit">发送邮件</button>
+        </form>
+
+    {% else %}
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <a href="/tenant_home/">返回主页</a>
+    <a href="/search_and_rent/">返回租房</a>
+</body>
+</html>
+

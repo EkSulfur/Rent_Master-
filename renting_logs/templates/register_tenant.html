@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <style>
+        /* 设置整个页面背景 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('/static/background2.jpg'); /* 添加背景图像路径 */
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* 设定注册容器样式 */
+        .container {
+            width: 300px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7); /* 添加背景透明度 */
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 设置表单样式 */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 输入框样式 */
+        input[type=text], input[type=password], input[type=email] {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* 按钮样式 */
+        button {
+            padding: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        /* 错误消息样式 */
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>用户注册</h2>
+        <form action="http://127.0.0.1:8000/register_tenant/" method="post" id="tenant-registration-form">
+
+            {% csrf_token %}
+            <label for="username">用户名:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">密码:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="confirm-password">确认密码:</label>
+            <input type="password" id="confirm-password" name="confirm-password" required>
+
+            <label for="email">邮箱:</label>
+            <input type="email" id="email" name="email" required>
+
+            <!-- 如果有更多字段，可以继续添加 -->
+
+            <button type="submit" id="register-button">注册</button>
+            <button type="button" onclick="location.href='/'">返回</button>
+        </form>
+
+        <!-- 成功提示消息 -->
+        {% if registration_success %}
+        <p>注册成功！</p>
+        {% endif %}
+
+        <!-- 错误消息 -->
+        <p class="error-message" id="password-mismatch-error"></p>
+        <p class="error-message" id="username-error"></p>
+        <p class="error-message" id="email-error"></p>
+    </div>
+
+    <!-- 添加JavaScript，实现注册成功后的重定向和密码验证 -->
+    <script>
+
+        document.getElementById("tenant-registration-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const passwordInput = document.getElementById("password");
+            const confirmPasswordInput = document.getElementById("confirm-password");
+            const passwordMismatchError = document.getElementById("password-mismatch-error");
+
+            let isValid = true;
+
+            // 验证密码是否一致
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                passwordMismatchError.textContent = "两次输入的密码不一致，请重新输入。";
+                isValid = false;
+            } else {
+                passwordMismatchError.textContent = "";
+            }
+
+            if (isValid) {
+                this.submit();
+            }
+        });
+
+        // 捕捉 Django 视图返回的错误消息
+        if (window.location.search.indexOf('username_taken=true') > -1) {
+            document.getElementById("username-error").textContent = "该用户名已被使用，请选择其他用户名。";
+        }
+        if (window.location.search.indexOf('email_taken=true') > -1) {
+            document.getElementById("email-error").textContent = "该邮箱已被使用，请选择其他邮箱。";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f4f8; /* 淡蓝色背景 */
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #333; /* 深灰色文字 */
+    }
+
+    h1, h2 {
+        color: #5a5a5a; /* 稍深的灰色 */
+    }
+
+    a {
+        color: #007bff; /* 蓝色链接 */
+        text-decoration: none;
+        margin-bottom: 20px;
+    }
+
+    a:hover {
+        color: #0056b3; /* 深蓝色悬停效果 */
+        text-decoration: underline;
+    }
+
+    form {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    button {
+        background-color: #28a745; /* 绿色按钮 */
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #218838; /* 深绿色悬停效果 */
+    }
+
+    .error {
+        color: #dc3545; /* 红色错误信息 */
+    }
+
+    .search-form {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .form-field {
+        display: flex;
+        align-items: center;
+        margin: 5px;
+    }
+
+    .form-field input, .form-field select {
+        margin-left: 5px;
+    }
+
+    .houses-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* 使卡片靠左对齐 */
+    width: 100%;
+    max-width: 1200px; /* 根据需要调整最大宽度 */
+    margin: 0 auto;
+    gap: 10px; /* 为卡片之间添加间隙 */
+    }
+
+    .house {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    flex: 0 1 200px; /* 不允许卡片增长，基础宽度为200px */
+    margin-bottom: 10px;
+}
+
+
+    @media (max-width: 1000px) {
+    .house {
+        flex: 0 1 calc(25% - 20px); /* 调整基础宽度 */
+    }
+    }
+
+    @media (max-width: 600px) {
+        .house {
+            flex: 0 1 calc(50% - 20px); /* 调整基础宽度 */
+        }
+    }
+
+    @media (max-width: 400px) {
+        .house {
+            flex: 0 1 100%; /* 调整基础宽度 */
+        }
+    }
+
+
+
+    .fixed-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 10px;
+        border-top: 1px solid #ddd;
+        box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .fixed-footer input, .fixed-footer button {
+        padding: 8px;
+        margin: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .footer-space {
+        height: 50px; /* 足够覆盖固定栏的高度 */
+    }
+
+    @media (max-width: 1000px) {
+        .house {
+            width: calc(25% - 20px); /* 屏幕较小时每行4个 */
+        }
+    }
+
+    @media (max-width: 600px) {
+        .house {
+            width: calc(50% - 20px); /* 屏幕更小时每行2个 */
+        }
+    }
+
+    @media (max-width: 400px) {
+        .house {
+            width: 100%; /* 屏幕很小时每行1个 */
+        }
+    }
+
+</style>
+
+
+<head>
+    <title>房屋搜索和租赁</title>
+    <!-- ... 其他头部信息 ... -->
+</head>
+<body>
+    <h1>搜索房屋</h1>
+    <a href="/tenant_home/">返回主页</a> <!-- 添加返回主页的链接 -->
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="GET" class="search-form">
+    <div class="form-field">
+        最小面积：<input type="number" name="min_area" min="0">
+    </div>
+    <div class="form-field">
+        最大面积：<input type="number" name="max_area" min="0">
+    </div>
+    <div class="form-field">
+        位置：<input type="text" name="location">
+    </div>
+    <div class="form-field">
+        布局：<input type="text" name="layout">
+    </div>
+    <div class="form-field">
+        最小租金：<input type="number" name="min_rent" min="0">
+    </div>
+    <div class="form-field">
+        最大租金：<input type="number" name="max_rent" min="0">
+    </div>
+    <div class="form-field">
+        <label for="status">状态:</label>
+        <select id="status" name="status">
+            <option value="all">所有状态</option>
+            <option value="available">可出租</option>
+            <option value="unavailable">不可出租</option>
+        </select>
+    </div>
+    <div class="form-field">
+        <button type="submit" name="search">搜索</button>
+    </div>
+</form>
+
+    <h2>房屋列表</h2>
+    <form method="POST">
+
+        <div class="houses-container">
+
+        {% csrf_token %}
+        {% for house in houses %}
+        <div class="house">
+            <h3>房屋编号：{{ house.house_number }}</h3>
+            <p>面积：{{ house.area }} 平方米</p>
+            <p>位置：{{ house.location }}</p>
+            <p>布局：{{ house.layout }}</p>
+            <p>月租金：{{ house.monthly_rent }} 元</p>
+            <p>状态：{{ house.status }}</p>
+            <p>租赁条款：{{ house.lease_terms }}</p>
+
+            {% if house.status != '不可出租' %}
+                <input type="radio" id="house_{{ house.id }}" name="house_id" value="{{ house.id }}">
+                <label for="house_{{ house.id }}">选择这个房子</label>
+            {% else %}
+                <p>不可出租</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        </div>
+
+        <div class="fixed-footer">
+        <label for="rent_duration">租房时间（月份）:</label>
+        <input type="number" id="rent_duration" name="rent_duration" min="1" placeholder="月份">
+        <button type="submit" name="rent_house">租房</button>
+
+        </div>
+
+    </form>
+
+
+<div class="footer-space"></div>
+
+</body>
+</html>
+

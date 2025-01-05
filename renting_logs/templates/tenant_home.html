@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>租户主页</title>
+    <style>
+        /* 设置整个页面背景 */
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('/static/background2.jpg');
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 设定内容框样式 */
+        .content {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            width: 30%; /* 设定内容框宽度 */
+        }
+
+        /* 设定标题样式 */
+        h1 {
+            color: #333;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        /* 设定按钮菜单样式 */
+        .menu {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 设定每个按钮样式 */
+        .menu-item {
+            width: 100%;
+            height: 60px;
+        }
+
+        /* 设定按钮链接样式 */
+        .menu a {
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            border-radius: 10px;
+            font-size: 20px;
+        }
+
+        /* 悬停时按钮颜色 */
+        .menu a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>租户主页</h1>
+        <p>欢迎，{{ tenant.username }}！</p>
+        <ul class="menu">
+            <li class="menu-item"><a href="/edit_tenant_info/">修改个人信息</a></li>
+            <li class="menu-item"><a href="/edit_tenant_password/">修改用户名密码</a></li>
+            <li class="menu-item"><a href="/search_and_rent/">查询/租赁</a></li>
+            <li class="menu-item"><a href="/home/">返回主页</a></li>
+        </ul>
+    </div>
+</body>
+</html>
